@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 import React, {ReactNode} from 'react';
 import TextCus from './TextCus';
+import {globalStyles} from '../styles/globalStyle';
+import {appColor} from '../constants/appColor';
+import {fontFamilies} from '../constants/fontFamilies';
 
 interface Props {
   icon?: ReactNode;
@@ -33,11 +36,36 @@ const ButtonCus = (props: Props) => {
     onPress,
     iconFlex,
   } = props;
-  return (
-    <TouchableOpacity>
+  return type === 'primary' ? (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        globalStyles.button,
+        {backgroundColor: color ?? appColor.primary},
+        styles,
+      ]}>
       {icon && iconFlex === 'Left' && icon}
-      <TextCus text={text} color={textColor} styles={textStyle} />
+      <TextCus
+        text={text}
+        color={textColor && appColor.white}
+        styles={[
+          textStyle,
+          {
+            marginLeft: icon ? 12 : 0,
+            fontSize:16
+          },
+        ]}
+        font={fontFamilies.semiBold}
+        flex={icon && iconFlex === 'right' ? 1 : 0}
+      />
       {icon && iconFlex === 'right' && icon}
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity>
+      <TextCus
+        color={type === 'link' ? appColor.primary : appColor.text}
+        text={text}
+      />
     </TouchableOpacity>
   );
 };

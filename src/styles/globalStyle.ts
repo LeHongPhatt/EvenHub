@@ -13,4 +13,22 @@ export const globalStyles =  StyleSheet.create({
         color: appColor.text,
       },
 
+      button:{
+        borderRadius:12,
+        justifyContent: 'center',alignItems: 'center',
+        backgroundColor:appColor.white,
+        paddingHorizontal:16,
+        paddingVertical:16,minHeight:16,
+        flexDirection:"row"
+      },
+      section:{
+        paddingHorizontal:16,
+        paddingBottom:20
+      },
+      row:{
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"flex-start"
+      }
+
 })
