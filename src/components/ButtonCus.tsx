@@ -20,6 +20,7 @@ interface Props {
   styles?: StyleProp<ViewStyle>;
   textColor?: string;
   textStyle?: StyleProp<TextStyle>;
+  textFont?: string;
   onPress?: () => void;
   iconFlex?: 'right' | 'Left';
 }
@@ -33,6 +34,7 @@ const ButtonCus = (props: Props) => {
     styles,
     textColor,
     textStyle,
+    textFont,
     onPress,
     iconFlex,
   } = props;
@@ -41,7 +43,8 @@ const ButtonCus = (props: Props) => {
       onPress={onPress}
       style={[
         globalStyles.button,
-        {backgroundColor: color ?? appColor.primary},
+        globalStyles.shadow,
+        {backgroundColor: color ?? appColor.primary, marginBottom: 17},
         styles,
       ]}>
       {icon && iconFlex === 'Left' && icon}
@@ -52,16 +55,17 @@ const ButtonCus = (props: Props) => {
           textStyle,
           {
             marginLeft: icon ? 12 : 0,
-            fontSize:16
+            fontSize: 16,
+            textAlign: 'center',
           },
         ]}
-        font={fontFamilies.semiBold}
+        font={textFont ?? fontFamilies.semiBold}
         flex={icon && iconFlex === 'right' ? 1 : 0}
       />
       {icon && iconFlex === 'right' && icon}
     </TouchableOpacity>
   ) : (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <TextCus
         color={type === 'link' ? appColor.primary : appColor.text}
         text={text}

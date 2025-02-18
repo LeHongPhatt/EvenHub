@@ -16,7 +16,7 @@ import {appColor} from '../../constants/appColor';
 import {fontFamilies} from '../../constants/fontFamilies';
 import LoginSocial from './component/LoginSocial';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [passWord, setPassWord] = useState('');
 
@@ -66,7 +66,11 @@ const LoginScreen = () => {
             />
             <TextCus text="Remember Me" />
           </RowComponent>
-          <ButtonCus text="Forgot PassWord" type="text" />
+          <ButtonCus
+            text="Forgot PassWord"
+            type="text"
+            onPress={() => navigation.navigate('ForgotPassWord')}
+          />
         </RowComponent>
       </SectionComponent>
       <SpaceComponent height={16} />
@@ -77,7 +81,12 @@ const LoginScreen = () => {
       <SectionComponent>
         <RowComponent justify="center">
           <TextCus text='Don"t have an account? ' />
-          <ButtonCus text="Sign Up" type="link" color="" />
+          <ButtonCus
+            text="Sign Up"
+            type="link"
+            color=""
+            onPress={() => navigation.navigate('SignUpScreen')}
+          />
         </RowComponent>
       </SectionComponent>
     </ContainerComponent>
