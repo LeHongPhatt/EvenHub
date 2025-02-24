@@ -1,5 +1,13 @@
-import {View, Text, Button, Image, Switch} from 'react-native';
-import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  Switch,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ButtonCus,
@@ -15,12 +23,43 @@ import {Lock, Sms} from 'iconsax-react-native';
 import {appColor} from '../../constants/appColor';
 import {fontFamilies} from '../../constants/fontFamilies';
 import LoginSocial from './component/LoginSocial';
+import authenticationApi from '../../api/authApi';
+import {Validate} from '../../utils/Validate';
+import {useDispatch} from 'react-redux';
+import {addAuth} from '../../redux/reducers/authReducer';
 
 const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
-  const [passWord, setPassWord] = useState('');
+  const [password, setPassWord] = useState('');
 
   const [isRemember, setIsRemember] = useState(true);
+
+  const dispatch = useDispatch();
+
+  const loginSubmit = async () => {
+    const emailValidate = Validate.email(email);
+    if (emailValidate) {
+      try {
+        const res = await authenticationApi.HandleAuthentication(
+          '/login',
+          {email, password},
+          'post',
+        );
+        dispatch(addAuth(res.data));
+
+        await AsyncStorage.setItem(
+          'auth',
+          isRemember ? JSON.stringify(res.data) : email,
+        );
+
+        console.log('===login emailValidate==', res);
+      } catch (error) {
+        console.log('=====error=====', error);
+      }
+    } else {
+      Alert.alert('Sai Email!!!');
+    }
+  };
 
   return (
     <ContainerComponent isImageBackground isScrollable>
@@ -36,7 +75,6 @@ const LoginScreen = ({navigation}: any) => {
           style={{width: 162, height: 114, resizeMode: 'contain'}}
         />
       </SectionComponent>
-
       <SectionComponent>
         <TextCus size={20} font={fontFamilies.bold} text="Sign In" />
         <SpaceComponent height={20} />
@@ -53,7 +91,7 @@ const LoginScreen = ({navigation}: any) => {
           isPassword
           placeholder="Password"
           alowClear
-          value={passWord}
+          value={password}
           onChange={pass => setPassWord(pass)}
         />
         <RowComponent justify="space-between">
@@ -75,7 +113,12 @@ const LoginScreen = ({navigation}: any) => {
       </SectionComponent>
       <SpaceComponent height={16} />
       <SectionComponent>
-        <ButtonCus textColor={appColor.white} text="Login" type="primary" />
+        <ButtonCus
+          textColor={appColor.white}
+          text="Login"
+          type="primary"
+          onPress={loginSubmit}
+        />
       </SectionComponent>
       <LoginSocial />
       <SectionComponent>
