@@ -25,12 +25,14 @@ import {fontFamilies} from '../../constants/fontFamilies';
 import LoginSocial from './component/LoginSocial';
 import authenticationApi from '../../api/authApi';
 import {Validate} from '../../utils/Validate';
-import {useDispatch} from 'react-redux';
-import {addAuth} from '../../redux/reducers/authReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {addAuth, authSelector} from '../../redux/reducers/authReducer';
 
 const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassWord] = useState('');
+  const auth = useSelector(authSelector);
+  console.log('==LoginScreen===', auth);
 
   const [isRemember, setIsRemember] = useState(true);
 
@@ -57,7 +59,7 @@ const LoginScreen = ({navigation}: any) => {
         console.log('=====error=====', error);
       }
     } else {
-      Alert.alert('Sai Email!!!');
+      Alert.alert('Vui lòng nhập đầy đủ thông tin !!!')
     }
   };
 

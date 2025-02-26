@@ -65,6 +65,7 @@ const SignUpScreen = ({navigation}: any) => {
             },
             'post',
           );
+          console.log('=====register===', res);
           dispatch(addAuth(res.data));
           await AsyncStorage.setItem('auth', JSON.stringify(res.data));
           setIsLoading(false);
@@ -76,7 +77,7 @@ const SignUpScreen = ({navigation}: any) => {
         setErrMes('Email không đúng định dạng !!!');
       }
     } else {
-      setErrMes('Please enter a valid email or password');
+      setErrMes('Vui lòng nhập đúng password !!!');
     }
   };
   return (
