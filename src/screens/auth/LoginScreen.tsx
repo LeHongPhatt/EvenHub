@@ -57,7 +57,7 @@ const LoginScreen = ({navigation}: any) => {
         console.log('=====error=====', error);
       }
     } else {
-      Alert.alert('Sai Email!!!');
+      Alert.alert('vui long nhap day du thong tin !!!');
     }
   };
 
@@ -112,7 +112,7 @@ const LoginScreen = ({navigation}: any) => {
         </RowComponent>
       </SectionComponent>
       <SpaceComponent height={16} />
-      <SectionComponent>
+      <SectionComponent styles={{alignItems:"center"}}>
         <ButtonCus
           textColor={appColor.white}
           text="Login"

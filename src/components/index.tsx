@@ -5,6 +5,7 @@ import InputCus from './InputCus';
 import ContainerComponent from './ContainerComponent';
 import SectionComponent from './SectionComponent';
 import RowComponent from './RowComponent';
+import DrawerCustom from './DrawerCustom';
 
 export {
   SpaceComponent,
@@ -14,4 +15,5 @@ export {
   ContainerComponent,
   SectionComponent,
   RowComponent,
+  DrawerCustom,
 };

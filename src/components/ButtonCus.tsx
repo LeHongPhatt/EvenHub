@@ -23,6 +23,7 @@ interface Props {
   textFont?: string;
   onPress?: () => void;
   iconFlex?: 'right' | 'Left';
+  disabled?: boolean;
 }
 
 const ButtonCus = (props: Props) => {
@@ -37,14 +38,24 @@ const ButtonCus = (props: Props) => {
     textFont,
     onPress,
     iconFlex,
+    disabled,
   } = props;
   return type === 'primary' ? (
     <TouchableOpacity
+      disabled={disabled}
       onPress={onPress}
       style={[
         globalStyles.button,
         globalStyles.shadow,
-        {backgroundColor: color ?? appColor.primary, marginBottom: 17},
+        {
+          backgroundColor: color
+            ? color
+            : disabled
+            ? appColor.gray4
+            : appColor.primary,
+          marginBottom: 17,
+          width: '90%',
+        },
         styles,
       ]}>
       {icon && iconFlex === 'Left' && icon}

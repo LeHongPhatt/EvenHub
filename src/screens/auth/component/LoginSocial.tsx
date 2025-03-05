@@ -7,7 +7,7 @@ import {Facebook, Google} from '../../../assets/svgs';
 
 const LoginSocial = () => {
   return (
-    <SectionComponent>
+    <SectionComponent styles={{alignItems: 'center'}}>
       <TextCus
         styles={{textAlign: 'center'}}
         text="OR"

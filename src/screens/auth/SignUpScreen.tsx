@@ -21,6 +21,12 @@ import {Validate} from '../../utils/Validate';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../../redux/reducers/authReducer';
 
+interface ErrorMessage {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const initValue = {
   username: '',
   email: '',
@@ -32,51 +38,83 @@ const SignUpScreen = ({navigation}: any) => {
   const [registerValue, setRegisterValue] = useState(initValue);
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const [errMes, setErrMes] = useState('');
+  const [errMes, setErrMes] = useState<any>();
+  const [isDisabled, setIsDisabled] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (registerValue.email || registerValue.password) {
-      setErrMes('');
+    if (
+      !errMes ||
+      (errMes && (errMes.email || errMes.password || errMes.confirmPassword)) ||
+      !registerValue.email ||
+      !registerValue.password ||
+      !registerValue.confirmPassword
+    ) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
     }
-  }, [registerValue.email, registerValue.password]);
+  }, [errMes, registerValue]);
+
+  // useEffect(() => {
+  //   if (registerValue.email || registerValue.password) {
+  //     setErrMes('');
+  //   }
+  // }, [registerValue.email, registerValue.password]);
   const handleRegister = (key: string, value: string) => {
     const data: any = {...registerValue};
     data[`${key}`] = value;
     setRegisterValue(data);
   };
 
-  const handleSubmit = async () => {
-    const {email, password, confirmPassword} = registerValue;
-    const emailValidate = Validate.email(email);
-    const passwordValidate = Validate.Password(password);
-    if (email && password && confirmPassword) {
-      if (emailValidate && passwordValidate) {
-        setErrMes('');
-        setIsLoading(true);
-        try {
-          const res = await authenticationApi.HandleAuthentication(
-            '/register',
-            {
-              email,
-              fullname: registerValue.username,
-              password,
-            },
-            'post',
-          );
-          dispatch(addAuth(res.data));
-          await AsyncStorage.setItem('auth', JSON.stringify(res.data));
-          setIsLoading(false);
-        } catch (error) {
-          console.log('===error==register===', error);
-          setIsLoading(false);
+  const formValidator = (key: string) => {
+    const data: any = {...errMes};
+    let message = '';
+    switch (key) {
+      case 'email':
+        if (!registerValue.email) {
+          message = 'Email is required';
+        } else if (!Validate.email(registerValue.email)) {
+          message = 'Email không đúng định dạng !!!';
+        } else {
+          message = '';
         }
-      } else {
-        setErrMes('Email không đúng định dạng !!!');
-      }
-    } else {
-      setErrMes('Please enter a valid email or password');
+        break;
+
+      case 'password':
+        message = !registerValue.password ? 'Password is required' : '';
+        break;
+      case 'confirmPassword':
+        if (!registerValue.confirmPassword) {
+          message = 'Please password is confirmation';
+        } else if (registerValue.password !== registerValue.confirmPassword) {
+          message = 'Passwords do not match !!!';
+        } else message = '';
+
+        break;
+    }
+    data[`{key}`] = message;
+    setErrMes(data);
+  };
+
+  const handleSubmit = async () => {
+    const api = '/verification';
+    setIsLoading(true);
+    try {
+      const res = await authenticationApi.HandleAuthentication(
+        api,
+        {email: registerValue.email},
+        'post',
+      );
+      console.log('===handleSubmit===', res);
+      setIsLoading(false);
+      navigation.navigate('Verification', {
+        token: res.token,
+        ...registerValue,
+      });
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
     }
   };
   return (
@@ -98,6 +136,7 @@ const SignUpScreen = ({navigation}: any) => {
             alowClear
             value={registerValue.email}
             onChange={val => handleRegister('email', val)}
+            onEnd={() => formValidator('email')}
           />
           <InputCus
             isPassword
@@ -106,6 +145,7 @@ const SignUpScreen = ({navigation}: any) => {
             alowClear
             value={registerValue.password}
             onChange={val => handleRegister('password', val)}
+            onEnd={() => formValidator('password')}
           />
           <InputCus
             isPassword
@@ -114,16 +154,24 @@ const SignUpScreen = ({navigation}: any) => {
             alowClear
             value={registerValue.confirmPassword}
             onChange={val => handleRegister('confirmPassword', val)}
+            onEnd={() => formValidator('confirmPassword')}
           />
         </SectionComponent>
         {errMes && (
           <SectionComponent>
-            <TextCus text={errMes} color={appColor.danger} />
+            {Object.keys(errMes).map((error, index) => (
+              <TextCus
+                text={errMes[`${error}`]}
+                key={`error${index}`}
+                color={appColor.danger}
+              />
+            ))}
           </SectionComponent>
         )}
 
-        <SectionComponent>
+        <SectionComponent styles={{alignItems: 'center'}}>
           <ButtonCus
+            disabled={isDisabled}
             onPress={handleSubmit}
             textStyle={{alignContent: 'center'}}
             textColor={appColor.white}
@@ -135,7 +183,7 @@ const SignUpScreen = ({navigation}: any) => {
         </SectionComponent>
 
         <LoginSocial />
-        <SectionComponent>
+        <SectionComponent styles={{alignItems: 'center'}}>
           <RowComponent justify="center">
             <TextCus text='Don"t have an account? ' />
             <ButtonCus

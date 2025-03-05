@@ -18,8 +18,8 @@ const HomeScreens = () => {
       <Button
         title="LogOut"
         onPress={async () => {
-          await AsyncStorage.getItem('auth',);
           dispatch(removeAuth({}));
+          // await AsyncStorage.clear();
         }}
       />
     </View>
