@@ -1,5 +1,5 @@
 import {View, Text, Image, Pressable, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import {globalStyles} from '../../styles/globalStyle';
 import Swiper from 'react-native-swiper';
 import {appInfor} from '../../constants/appInfor';
@@ -9,6 +9,7 @@ import {fontFamilies} from '../../constants/fontFamilies';
 
 const Onboarding = ({navigation}: any) => {
   const [index, setIndex] = React.useState(0);
+  const [checkintro, setcheckintro] = useState('');
   return (
     <View style={[globalStyles.container]}>
       <Swiper
