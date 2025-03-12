@@ -93,7 +93,8 @@ const SignUpScreen = ({navigation}: any) => {
 
         break;
     }
-    data[`{key}`] = message;
+    // data[`{key}`] = message;
+    data[`${key}`] = message;
     setErrMes(data);
   };
 
@@ -109,7 +110,7 @@ const SignUpScreen = ({navigation}: any) => {
       console.log('===handleSubmit===', res);
       setIsLoading(false);
       navigation.navigate('Verification', {
-        token: res.token,
+        code: res.code,
         ...registerValue,
       });
     } catch (error) {

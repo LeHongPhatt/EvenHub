@@ -20,9 +20,11 @@ import {LoadingModal} from '../../modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Verification = ({navigation, route}: any) => {
-  const {token, email, password, fullname} = route.params;
-  console.log("=====token=====", token)
-  const [currentCode, setCurrentCode] = useState<string>(token);
+  const {code, email, password, fullname} = route.params;
+  console.log('=====code=====', code);
+  console.log('=====email=====', email);
+  const [currentCode, setCurrentCode] = useState<string>(code);
+  console.log('+======currentCode======', currentCode);
   const [codeValues, setCodeValues] = useState<string[]>([]);
   const [newCode, setNewCode] = useState('');
   const [limit, setLimit] = useState(120);
@@ -75,7 +77,7 @@ const Verification = ({navigation, route}: any) => {
       );
 
       setLimit(120);
-      setCurrentCode(res.token);
+      setCurrentCode(res.code);
       setIsLoading(false);
 
       console.log('==handleResendVerification====', res);
@@ -179,9 +181,9 @@ const Verification = ({navigation, route}: any) => {
             placeholder="-"
           />
         </RowComponent>
-        <SectionComponent styles={{marginTop: 40}}>
+        <SectionComponent styles={{marginTop: 40, alignItems: 'center'}}>
           <ButtonCus
-            disable={newCode.length !== 4}
+            disabled={newCode.length !== 4}
             onPress={handleVerification}
             text="Continue"
             type="primary"
