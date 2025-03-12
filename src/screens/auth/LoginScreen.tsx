@@ -55,6 +55,7 @@ const LoginScreen = ({navigation}: any) => {
         console.log('===login emailValidate==', res);
       } catch (error) {
         console.log('=====error=====', error);
+        Alert.alert('Tài khoản hoặc mật khẩu không đúng!');
       }
     } else {
       Alert.alert('vui long nhap day du thong tin !!!');
@@ -112,7 +113,7 @@ const LoginScreen = ({navigation}: any) => {
         </RowComponent>
       </SectionComponent>
       <SpaceComponent height={16} />
-      <SectionComponent styles={{alignItems:"center"}}>
+      <SectionComponent styles={{alignItems: 'center'}}>
         <ButtonCus
           textColor={appColor.white}
           text="Login"
