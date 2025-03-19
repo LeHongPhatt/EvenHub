@@ -3,6 +3,7 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {authSelector, removeAuth} from '../../redux/reducers/authReducer';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const HomeScreens = () => {
   const dispatch = useDispatch();
@@ -18,8 +19,9 @@ const HomeScreens = () => {
       <Button
         title="LogOut"
         onPress={async () => {
-          dispatch(removeAuth({}));
           await AsyncStorage.clear();
+          await GoogleSignin.signOut();
+          dispatch(removeAuth({}));
         }}
       />
     </View>

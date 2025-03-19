@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  Switch,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import {Image, Switch, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -18,7 +10,6 @@ import {
   SpaceComponent,
   TextCus,
 } from '../../components';
-import {globalStyles} from '../../styles/globalStyle';
 import {Lock, Sms} from 'iconsax-react-native';
 import {appColor} from '../../constants/appColor';
 import {fontFamilies} from '../../constants/fontFamilies';
@@ -31,11 +22,16 @@ import {addAuth} from '../../redux/reducers/authReducer';
 const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassWord] = useState('');
-
   const [isRemember, setIsRemember] = useState(true);
-
+  const [isDisable, setIsDisable] = useState(true);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const emailValidate = Validate.email(email);
+    if (!email || !password || !emailValidate) {
+      setIsDisable(true);
+    } else setIsDisable(false);
+  }, [email, password]);
   const loginSubmit = async () => {
     const emailValidate = Validate.email(email);
     if (emailValidate) {
@@ -115,6 +111,7 @@ const LoginScreen = ({navigation}: any) => {
       <SpaceComponent height={16} />
       <SectionComponent styles={{alignItems: 'center'}}>
         <ButtonCus
+          disabled={isDisable}
           textColor={appColor.white}
           text="Login"
           type="primary"
