@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EvenHub</string>
+    <string name="facebook_app_id">657021930151703</string><string name="facebook_client_token">0175b1e31d553faf93bdd40959a7d1c1</string>
 </resources>
