@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import React from 'react';
-import {RowComponent, SpaceComponent, TextCus} from '.';
+// import {ButtonComponent, RowComponent, SpaceComponent, TextCus} from '.';
 // import {globalStyles} from '../styles/globalStyles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -28,12 +28,14 @@ import {
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {LoginManager} from 'react-native-fbsdk-next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {globalStyles} from '../styles/globalStyle';
 import {appColor} from '../constants/appColor';
+import TextCus from './TextCus';
+import RowComponent from './RowComponent';
+import {globalStyles} from '../styles/globalStyle';
+import SpaceComponent from './SpaceComponent';
 
 const DrawerCustom = ({navigation}: any) => {
   const user = useSelector(authSelector);
-  console.log('===user===', user);
   const dispatch = useDispatch();
   const size = 20;
   const color = appColor.gray;
@@ -91,9 +93,11 @@ const DrawerCustom = ({navigation}: any) => {
     <View style={[localStyles.container]}>
       <TouchableOpacity
         onPress={() => {
+          console.log(navigation.getState());
           navigation.closeDrawer();
-          navigation.navigate('Profile', {
-            screen: 'ProfileScreen',
+
+          navigation.navigate('HomeNavigator', {
+            screen: 'Profile',
           });
         }}>
         {user.photo ? (

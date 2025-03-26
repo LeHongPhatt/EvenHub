@@ -16,6 +16,7 @@ const TagComponent = (props: Props) => {
   const {onPress, label, icon, textColor, styles, bgColor} = props;
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={[
         globalStyles.row,
         globalStyles.tag,
