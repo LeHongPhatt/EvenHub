@@ -8,6 +8,11 @@ import RowComponent from './RowComponent';
 import DrawerCustom from './DrawerCustom';
 import CircleCus from './CircleCus';
 import TagComponent from './TagComponent';
+import CategoriesList from './CategoriesList';
+import TabBarComponent from './TabBarComponent';
+import EventItem from './EventItem';
+import CardCus from './CardCus';
+import AvatarGroup from './AvatarGroup';
 
 export {
   SpaceComponent,
@@ -19,5 +24,10 @@ export {
   RowComponent,
   DrawerCustom,
   CircleCus,
-  TagComponent
+  TagComponent,
+  CategoriesList,
+  TabBarComponent,
+  EventItem,
+  CardCus,
+  AvatarGroup,
 };

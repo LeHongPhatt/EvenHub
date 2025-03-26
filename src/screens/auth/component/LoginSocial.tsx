@@ -30,6 +30,7 @@ const LoginSocial = () => {
   const api = `/google-signin`;
   const dispatch = useDispatch();
   const LoginGoogle = async () => {
+    setIsLoading(true);
     await GoogleSignin.hasPlayServices({
       showPlayServicesUpdateDialog: true,
     });
@@ -49,6 +50,7 @@ const LoginSocial = () => {
 
       await AsyncStorage.setItem('auth', JSON.stringify(res.data));
       console.log('======GoogleSignin====', res);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }

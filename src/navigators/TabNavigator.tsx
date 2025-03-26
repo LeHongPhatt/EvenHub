@@ -19,7 +19,7 @@ import ProfileNavigator from './ProfileNavigator';
 import {globalStyles} from '../styles/globalStyle';
 import DrawerNavigator from './DrawerNavigator';
 
-const TabNavigator = () => {
+const TabNavigator = ({navigation}: any) => {
   const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
@@ -84,7 +84,6 @@ const TabNavigator = () => {
       <Tab.Screen name="Add" component={AddNewScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />
       <Tab.Screen name="Profile" component={ProfileNavigator} />
-
     </Tab.Navigator>
   );
 };

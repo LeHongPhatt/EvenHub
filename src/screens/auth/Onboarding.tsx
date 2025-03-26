@@ -1,5 +1,5 @@
 import {View, Text, Image, Pressable, TouchableOpacity} from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {globalStyles} from '../../styles/globalStyle';
 import Swiper from 'react-native-swiper';
 import {appInfor} from '../../constants/appInfor';
@@ -20,7 +20,7 @@ const Onboarding = ({navigation}: any) => {
         <Image
           style={{
             width: appInfor.size.WIDTH,
-            height: appInfor.size.HEIGHT,
+            height: '100%',
             resizeMode: 'cover',
           }}
           source={require('../../assets/images/onboarding-1.png')}

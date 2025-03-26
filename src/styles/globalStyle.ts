@@ -49,5 +49,22 @@ export const globalStyles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 100
+  },
+  card: {
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: appColor.white,
+    margin: 12,
+  },
+  noSpaceCard: {
+    alignItems: 'center',
+    width: 45,
+    margin: 0,
+    padding: 0,
+    marginVertical: 0,
+    marginHorizontal: 0,
+    marginBottom: 0,
+    height: 45,
+    justifyContent: 'center',
   }
 })
