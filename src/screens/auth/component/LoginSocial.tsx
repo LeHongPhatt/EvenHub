@@ -6,7 +6,6 @@ import {appColor} from '../../../constants/appColor';
 import {Facebook, Google} from '../../../assets/svgs';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useTheme} from '@react-navigation/native';
-import authenticationApi from '../../../api/authApi';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +17,7 @@ import {
   AccessToken,
 } from 'react-native-fbsdk-next';
 import {LoadingModal} from '../../../modal';
+import authenticationAPI from '../../../api/authApi';
 GoogleSignin.configure({
   webClientId:
     '943189562687-8b09tm07ler7umj2o6spkchpo4e8s0uj.apps.googleusercontent.com',
@@ -39,7 +39,7 @@ const LoginSocial = () => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const user = userInfo.data?.user;
-      const res: any = await authenticationApi.HandleAuthentication(
+      const res: any = await authenticationAPI.handleAuthentication(
         api,
         user,
         'post',
@@ -113,7 +113,7 @@ const LoginSocial = () => {
             photo: profile.imageURL,
           };
 
-          const res: any = await authenticationApi.HandleAuthentication(
+          const res: any = await authenticationAPI.handleAuthentication(
             api,
             data,
             'post',
@@ -132,7 +132,7 @@ const LoginSocial = () => {
   };
 
   return (
-    <SectionComponent styles={{alignItems: 'center'}}>
+    <SectionComponent style={{alignItems: 'center'}}>
       <TextCus
         styles={{textAlign: 'center'}}
         text="OR"
@@ -140,17 +140,7 @@ const LoginSocial = () => {
         font={fontFamilies.medium}
         color={appColor.gray4}
       />
-      <LoginButton
-        onLoginFinished={(error, result) => {
-          if (error) {
-            console.log(error);
-          } else if (result.isCancelled) {
-            console.log('User Cancelled the Login Flow');
-          } else {
-            console.log('======addAuth=========', result);
-          }
-        }}
-      />
+
       <ButtonCus
         onPress={LoginGoogle}
         textFont={fontFamilies.regular}
