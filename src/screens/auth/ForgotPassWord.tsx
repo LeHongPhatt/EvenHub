@@ -1,5 +1,5 @@
 import {Alert} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ButtonCus,
   ContainerComponent,
@@ -9,39 +9,60 @@ import {
   TextCus,
 } from '../../components';
 import {ArrowRight, Sms} from 'iconsax-react-native';
-import authenticationApi from '../../api/authApi';
 import {appColor} from '../../constants/appColor';
 import {LoadingModal} from '../../modal';
 import {Validate} from '../../utils/Validate';
+import authenticationAPI from '../../api/authApi';
 
 const ForgotPassWord = ({navigation}: any) => {
   const [email, setEmail] = useState('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPass] = useState<string>('');
   const [isDisable, setIsDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const handleCheckEmail = () => {
     const isValidEmail = Validate.email(email);
     setIsDisable(!isValidEmail);
   };
 
-  const handleForgotPassWord = async () => {
-    const api = `/forgotPassword`;
+  useEffect(() => {
+    setError('');
+    if (
+      email &&
+      newPassword &&
+      confirmPassword &&
+      newPassword === confirmPassword
+    ) {
+      setIsDisable(false);
+    } else {
+      setIsDisable(true);
+    }
+  }, [email, newPassword, confirmPassword]);
+  const handleRequestReset = async () => {
     setIsLoading(true);
+
     try {
-      const res: any = await authenticationApi.HandleAuthentication(
-        api,
-        {email},
+      const response = await authenticationAPI.handleAuthentication(
+        '/forgot_password',
+        {email, newPassword, confirmPassword},
         'post',
       );
-
-      console.log(res);
-
-      Alert.alert('Send mail', 'We sended a email includes new password!!!');
-      navigation.navigate('LoginScreen');
+      console.log('===response:===', response);
       setIsLoading(false);
-    } catch (error) {
+      if (response?.message) {
+        // navigation.navigate("Verification", { email }); // ⚠️ Nhớ tạo màn này
+        navigation.navigate('Verification', {
+          email,
+          otp: response?.otp || '',
+          newPassword,
+        });
+      }
+    } catch (err) {
       setIsLoading(false);
-      console.log(`Can not create new password api forgot password, ${error}`);
+      const message = err.response?.data?.message || 'Đã có lỗi xảy ra';
+      setError(message); // Xử lý đúng lỗi trả về từ backend
     }
   };
 
@@ -59,10 +80,23 @@ const ForgotPassWord = ({navigation}: any) => {
           placeholder="abc@gmail.com"
           onEnd={handleCheckEmail}
         />
+        <InputCus
+          value={newPassword}
+          onChange={val => setNewPassword(val)}
+          affix={<Sms size={20} color={appColor.gray} />}
+          isPassword
+        />
+        <InputCus
+          value={confirmPassword}
+          onChange={val => setConfirmPass(val)}
+          affix={<Sms size={20} color={appColor.gray} />}
+          isPassword
+        />
       </SectionComponent>
+      {error && <TextCus text={error} color={appColor.danger} />}
       <SectionComponent styles={{alignItems: 'center'}}>
         <ButtonCus
-          onPress={handleForgotPassWord}
+          onPress={handleRequestReset}
           disabled={isDisable}
           text="Send"
           type="primary"

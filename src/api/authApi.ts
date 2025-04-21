@@ -1,19 +1,25 @@
-import { Axios } from "axios"
-import axiosClient from "./axiosClient"
-import { appInfor } from "../constants/appInfor"
+import axiosClient from './axiosClient';
 
-class AuthApi {
-    HandleAuthentication = async (
-        url : string,
-        data?:any,
-        method?: "get" | "post"| "put"| "delete"
-    )=>{
-      return await axiosClient(`${appInfor.BASE_URL}/auth${url}`,{
-       method:  method ?? "get",
-       data,
-      })
+class AuthAPI {
+  async handleAuthentication(
+    url: string,
+    data: any = {},
+    method: 'get' | 'post' | 'put' | 'delete' = 'get',
+  ) {
+    try {
+      const res = await axiosClient(`/auth${url}`, {
+        method,
+        ...(method !== 'get' ? { data } : {}), // chỉ gán data nếu không phải GET
+      });
+
+      return res;
+    } catch (error) {
+      // Ghi log rõ ràng khi có lỗi
+      console.error("AuthAPI Error:", error);
+      throw error; // cho phép bên ngoài bắt lỗi tiếp
     }
-
+  }
 }
- const authenticationApi = new AuthApi()
- export default authenticationApi;
+
+const authenticationAPI = new AuthAPI();
+export default authenticationAPI;

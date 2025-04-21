@@ -18,6 +18,7 @@ import authenticationApi from '../../api/authApi';
 import {Validate} from '../../utils/Validate';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../../redux/reducers/authReducer';
+import authenticationAPI from '../../api/authApi';
 
 const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -36,7 +37,7 @@ const LoginScreen = ({navigation}: any) => {
     const emailValidate = Validate.email(email);
     if (emailValidate) {
       try {
-        const res = await authenticationApi.HandleAuthentication(
+        const res = await authenticationAPI.handleAuthentication(
           '/login',
           {email, password},
           'post',
@@ -61,18 +62,18 @@ const LoginScreen = ({navigation}: any) => {
   return (
     <ContainerComponent isImageBackground isScrollable>
       <SectionComponent
-        styles={{
-          justifyContent: 'center',
-          alignItems: 'center',
+        style={{
           marginTop: 75,
           marginBottom: 30,
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
         <Image
           source={require('../../assets/images/text-logo.png')}
           style={{width: 162, height: 114, resizeMode: 'contain'}}
         />
       </SectionComponent>
-      <SectionComponent>
+      <SectionComponent center ph={20} >
         <TextCus size={20} font={fontFamilies.bold} text="Sign In" />
         <SpaceComponent height={20} />
 
@@ -83,7 +84,7 @@ const LoginScreen = ({navigation}: any) => {
           value={email}
           onChange={val => setEmail(val)}
         />
-        <InputCus
+        <InputCus 
           affix={<Lock size={22} color={appColor.gray2} />}
           isPassword
           placeholder="Password"
@@ -91,25 +92,25 @@ const LoginScreen = ({navigation}: any) => {
           value={password}
           onChange={pass => setPassWord(pass)}
         />
-        <RowComponent justify="space-between">
-          <RowComponent onPress={() => setIsRemember(!isRemember)}>
-            <Switch
-              trackColor={{true: appColor.primary}}
-              thumbColor={appColor.white}
-              value={isRemember}
-              onChange={() => setIsRemember(!isRemember)}
-            />
-            <TextCus text="Remember Me" />
-          </RowComponent>
-          <ButtonCus
-            text="Forgot PassWord"
-            type="text"
-            onPress={() => navigation.navigate('ForgotPassWord')}
-          />
-        </RowComponent>
       </SectionComponent>
+      <RowComponent styles={{marginHorizontal: 20}} justify="space-between">
+        <RowComponent onPress={() => setIsRemember(!isRemember)}>
+          <Switch
+            trackColor={{true: appColor.primary}}
+            thumbColor={appColor.white}
+            value={isRemember}
+            onChange={() => setIsRemember(!isRemember)}
+          />
+          <TextCus text="Remember Me" />
+        </RowComponent>
+        <ButtonCus
+          text="Forgot PassWord"
+          type="text"
+          onPress={() => navigation.navigate('KYC')}
+        />
+      </RowComponent>
       <SpaceComponent height={16} />
-      <SectionComponent styles={{alignItems: 'center'}}>
+      <SectionComponent style={{alignItems: 'center'}}>
         <ButtonCus
           disabled={isDisable}
           textColor={appColor.white}
@@ -119,7 +120,7 @@ const LoginScreen = ({navigation}: any) => {
         />
       </SectionComponent>
       <LoginSocial />
-      <SectionComponent>
+      <SectionComponent center>
         <RowComponent justify="center">
           <TextCus text='Don"t have an account? ' />
           <ButtonCus

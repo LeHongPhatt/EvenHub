@@ -11,6 +11,7 @@ import Onboarding from '../screens/auth/Onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../redux/reducers/authReducer';
+import KYC from '../screens/auth/KYC/KYC';
 
 const AuthNavigator = () => {
   const [isExistingUser, setExistingUser] = useState(false);
@@ -41,6 +42,7 @@ const AuthNavigator = () => {
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="Verification" component={Verification} />
       <Stack.Screen name="ForgotPassWord" component={ForgotPassWord} />
+      <Stack.Screen name="KYC" component={KYC} />
     </Stack.Navigator>
   );
 };

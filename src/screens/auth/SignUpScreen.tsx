@@ -15,11 +15,11 @@ import {ArrowRight, Lock, Sms, User} from 'iconsax-react-native';
 import {appColor} from '../../constants/appColor';
 import {fontFamilies} from '../../constants/fontFamilies';
 import LoginSocial from './component/LoginSocial';
-import authenticationApi from '../../api/authApi';
 import {LoadingModal} from '../../modal';
 import {Validate} from '../../utils/Validate';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../../redux/reducers/authReducer';
+import authenticationAPI from '../../api/authApi';
 
 interface ErrorMessage {
   email: string;
@@ -102,7 +102,7 @@ const SignUpScreen = ({navigation}: any) => {
     const api = '/verification';
     setIsLoading(true);
     try {
-      const res = await authenticationApi.HandleAuthentication(
+      const res = await authenticationAPI.handleAuthentication(
         api,
         {email: registerValue.email},
         'post',
