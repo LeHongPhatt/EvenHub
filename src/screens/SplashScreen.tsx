@@ -5,13 +5,25 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {appInfor} from '../constants/appInfor';
 import {appColor} from '../constants/appColor';
 
 import {SpaceComponent} from '../components';
+import { getIntroSeen } from '../utils/storage';
 
-const SplashScreen = () => {
+const SplashScreen = ({navigation}:any) => {
+  useEffect(() => {
+    const checkIntro = async () => {
+      const seen = await getIntroSeen();
+      if (seen) {
+        navigation.replace("LoginScreen");
+      } else {
+        navigation.replace("Onboarding");
+      }
+    };
+    checkIntro();
+  }, [])
   return (
     <ImageBackground
       source={require('../assets/images/splash-img.png')}

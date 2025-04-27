@@ -2,6 +2,7 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {
   ButtonCus,
+  ContainerComponent,
   InputCus,
   SectionComponent,
   TextCus,
@@ -9,20 +10,62 @@ import {
 import {Camera} from 'iconsax-react-native';
 import {appColor} from '../../../../constants/appColor';
 import DropDownPicker from 'react-native-dropdown-picker';
-const ImagePicker = () => {
-  const [useName, setUseName] = React.useState('');
-  const [displayName, setDisplayName] = React.useState('');
-  const [isBio, setBio] = React.useState('');
-  const [interest, setInterest] = React.useState('');
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    {label: 'Apple', value: 'apple'},
-    {label: 'Banana', value: 'banana'},
-  ]);
+import authenticationAPI from '../../../../api/authApi';
+import {LoadingModal} from '../../../../modal';
+import {useDispatch} from 'react-redux';
+import {addAuth} from '../../../../redux/reducers/authReducer';
+import {useNavigation} from '@react-navigation/native';
+
+const ImagePicker = ({route}: any) => {
+  const navigation = useNavigation();
+  const {accesstoken} = route.params;
+  console.log('======accesstoken====', accesstoken);
+  const [isLoading, setLoading] = useState(false);
+  const [useName, setUseName] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [isBio, setBio] = useState('');
+  const [interest, setInterest] = useState('');
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+
+  const handleSubmit = async () => {
+    setError('');
+    if (!useName || !displayName) {
+      setError('Vui lòng nhập đầy đủ Username và DisplayName!');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await authenticationAPI.handleAuthentication(
+        '/kyc/profile',
+        {
+          username: useName,
+          displayName: displayName,
+          bio: isBio,
+          interests: interest ? interest.split(',').map(i => i.trim()) : [],
+        },
+        'put',
+        accesstoken,
+      );
+      console.log('======res====', res);
+      if (res.data) {
+        dispatch(addAuth(res.data));
+      }
+    } catch (error) {
+      if (error.response) {
+        const errorMessage = error.response.data.message || 'Vui lòng thử lại!';
+        setError(errorMessage);
+      } else {
+        setError('Lỗi mạng, vui lòng thử lại!');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      <SectionComponent center flex={1}>
+    <ContainerComponent isImageBackground isScrollable back>
+      <SectionComponent center>
         <TouchableOpacity
           style={{
             paddingHorizontal: 60,
@@ -34,32 +77,33 @@ const ImagePicker = () => {
         </TouchableOpacity>
         <SectionComponent ph={20} mt={20}>
           <TextCus styles={{marginBottom: 10}} text="Name" />
-          <InputCus value={useName} />
+          <InputCus value={useName} onChange={val => setUseName(val)} />
           <TextCus styles={{marginBottom: 10}} text="DisplayName" />
-          <InputCus value={displayName} />
+          <InputCus value={displayName} onChange={val => setDisplayName(val)} />
           <TextCus styles={{marginBottom: 10}} text="Bio" />
-          <InputCus value={isBio} />
+          <InputCus value={isBio} onChange={val => setBio(val)} />
           <TextCus styles={{marginBottom: 10}} text="Interest" />
-          <InputCus value={interest} />
-         
-          <DropDownPicker
-            style={{zIndex: 1000}}
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-          />
+          <InputCus value={interest} onChange={val => setInterest(val)} />
         </SectionComponent>
+        {error ? (
+          <TextCus
+            text={error}
+            color={appColor.danger}
+            styles={{marginTop: 10}}
+          />
+        ) : null}
       </SectionComponent>
-      <ButtonCus
-        iconFlex="right"
-        textColor={appColor.white}
-        text="Login"
-        type="primary"
-      />
-    </>
+      <SectionComponent center>
+        <ButtonCus
+          iconFlex="right"
+          textColor={appColor.white}
+          text="Submit"
+          type="primary"
+          onPress={handleSubmit}
+        />
+        <LoadingModal visible={isLoading} />
+      </SectionComponent>
+    </ContainerComponent>
   );
 };
 

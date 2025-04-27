@@ -12,37 +12,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../redux/reducers/authReducer';
 import KYC from '../screens/auth/KYC/KYC';
+import { ImagePicker } from '../screens/auth/KYC/components';
+import TabNavigator from './TabNavigator';
+const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
-  const [isExistingUser, setExistingUser] = useState(false);
-  console.log('===isExistingUser===', isExistingUser);
+  const [isLoading, setLoading] = useState(true);
+  const [hadIntro, setHadIntro] = useState(false);
 
-  const dispatch = useDispatch();
   useEffect(() => {
-    checkUserExists();
+    const checkIntro = async () => {
+      const seen = await AsyncStorage.getItem('hasSeenIntro');
+      setHadIntro(!!seen); // Nếu có => true
+      setLoading(false);
+    };
+    checkIntro();
   }, []);
 
-  const Stack = createNativeStackNavigator();
-  const checkUserExists = async () => {
-    dispatch(addAuth('auth'));
-    const res = await AsyncStorage.getItem('auth');
-    console.log('====res===auth==,', res);
-    res && setExistingUser(true);
-  };
+  if (isLoading) return null;
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      {/* {isExistingUser ? (
-        // <Stack.Screen name="MainApp" component={MainAppNavigator} />
-        <Stack.Screen name="Onboarding" component={Onboarding} />
-      ) : (
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      )} */}
-      <Stack.Screen name="Onboarding" component={Onboarding} />
+      {!hadIntro && <Stack.Screen name="Onboarding" component={Onboarding} />}
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="Verification" component={Verification} />
       <Stack.Screen name="ForgotPassWord" component={ForgotPassWord} />
-      <Stack.Screen name="KYC" component={KYC} />
+      <Stack.Screen name="KYC" component={ImagePicker} />
+      {/* <Stack.Screen name="ImagePicker" component={ImagePicker} /> */}
     </Stack.Navigator>
   );
 };
