@@ -3,10 +3,13 @@ import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {DrawerCustom} from '../components';
 import TabNavigator from './TabNavigator';
-const DrawerNavigator = () => {
+const DrawerNavigator = ({navigation}:any) => {
+  console.log(navigation.getState()) 
   const Drawer = createDrawerNavigator();
   return (
-    <Drawer.Navigator
+    <Drawer.Navigator 
+    initialRouteName="HomeNavigator"
+
       screenOptions={{
         headerShown: false,
         drawerPosition: 'left',

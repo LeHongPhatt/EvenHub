@@ -25,6 +25,7 @@ const LoginScreen = ({navigation}: any) => {
   const [password, setPassWord] = useState('');
   const [isRemember, setIsRemember] = useState(true);
   const [isDisable, setIsDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const LoginScreen = ({navigation}: any) => {
   const loginSubmit = async () => {
     const emailValidate = Validate.email(email);
     if (emailValidate) {
+      setIsLoading(true);
       try {
         const res = await authenticationAPI.handleAuthentication(
           '/login',
@@ -43,7 +45,7 @@ const LoginScreen = ({navigation}: any) => {
           'post',
         );
         dispatch(addAuth(res.data));
-
+        setIsLoading(true);
         await AsyncStorage.setItem(
           'auth',
           isRemember ? JSON.stringify(res.data) : email,
@@ -73,7 +75,7 @@ const LoginScreen = ({navigation}: any) => {
           style={{width: 162, height: 114, resizeMode: 'contain'}}
         />
       </SectionComponent>
-      <SectionComponent center ph={20} >
+      <SectionComponent center ph={20}>
         <TextCus size={20} font={fontFamilies.bold} text="Sign In" />
         <SpaceComponent height={20} />
 
@@ -84,7 +86,7 @@ const LoginScreen = ({navigation}: any) => {
           value={email}
           onChange={val => setEmail(val)}
         />
-        <InputCus 
+        <InputCus
           affix={<Lock size={22} color={appColor.gray2} />}
           isPassword
           placeholder="Password"
@@ -106,7 +108,7 @@ const LoginScreen = ({navigation}: any) => {
         <ButtonCus
           text="Forgot PassWord"
           type="text"
-          onPress={() => navigation.navigate('KYC')}
+          onPress={() => navigation.navigate('ForgotPassWord')}
         />
       </RowComponent>
       <SpaceComponent height={16} />

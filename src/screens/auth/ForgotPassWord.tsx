@@ -68,7 +68,7 @@ const ForgotPassWord = ({navigation}: any) => {
 
   return (
     <ContainerComponent back isImageBackground isScrollable>
-      <SectionComponent>
+      <SectionComponent ph={20}>
         <TextCus text="Resset Password" title />
         <SpaceComponent height={12} />
         <TextCus text="Please enter your email address to request a password reset" />
@@ -94,7 +94,7 @@ const ForgotPassWord = ({navigation}: any) => {
         />
       </SectionComponent>
       {error && <TextCus text={error} color={appColor.danger} />}
-      <SectionComponent styles={{alignItems: 'center'}}>
+      <SectionComponent style={{alignItems: 'center'}}>
         <ButtonCus
           onPress={handleRequestReset}
           disabled={isDisable}

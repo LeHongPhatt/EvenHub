@@ -1,4 +1,4 @@
-import {View, Text, Button, Image, Switch} from 'react-native';
+import {View, Text, Button, Image, Switch, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -56,11 +56,6 @@ const SignUpScreen = ({navigation}: any) => {
     }
   }, [errMes, registerValue]);
 
-  // useEffect(() => {
-  //   if (registerValue.email || registerValue.password) {
-  //     setErrMes('');
-  //   }
-  // }, [registerValue.email, registerValue.password]);
   const handleRegister = (key: string, value: string) => {
     const data: any = {...registerValue};
     data[`${key}`] = value;
@@ -99,38 +94,45 @@ const SignUpScreen = ({navigation}: any) => {
   };
 
   const handleSubmit = async () => {
-    const api = '/verification';
+    const api = '/register';
     setIsLoading(true);
     try {
       const res = await authenticationAPI.handleAuthentication(
         api,
-        {email: registerValue.email},
+        {
+          email: registerValue.email,
+          password: registerValue.password,
+        },
         'post',
       );
       console.log('===handleSubmit===', res);
+      const {accesstoken, isProfileCompleted, kycStatus} = res.data;
+      await AsyncStorage.setItem('auth', JSON.stringify(res.data));
       setIsLoading(false);
-      navigation.navigate('Verification', {
-        code: res.code,
-        ...registerValue,
-      });
+
+      if (!isProfileCompleted) {
+        navigation.navigate('KYC', {accesstoken, kycStatus}); // Truyền thêm kycStatus nếu cần
+      } else {
+        navigation.replace('Explore');
+      }
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
+      // Hiển thị thông báo lỗi cho người dùng
+      Alert.alert(
+        'Lỗi',
+        (error as any)?.response?.data?.message ||
+          'Đăng ký thất bại, vui lòng thử lại!',
+      );
+      console.log(error);
     }
   };
   return (
     <>
       <ContainerComponent isImageBackground isScrollable back>
-        <SectionComponent>
+        <SectionComponent ph={20}>
           <TextCus size={20} font={fontFamilies.bold} text={'Sign Up'} title />
           <SpaceComponent height={20} />
-          <InputCus
-            placeholder="Full Name"
-            affix={<User size={22} color={appColor.gray2} />}
-            alowClear
-            value={registerValue.username}
-            onChange={val => handleRegister('username', val)}
-          />
+
           <InputCus
             placeholder="Email"
             affix={<Sms size={22} color={appColor.gray2} />}
@@ -170,7 +172,7 @@ const SignUpScreen = ({navigation}: any) => {
           </SectionComponent>
         )}
 
-        <SectionComponent styles={{alignItems: 'center'}}>
+        <SectionComponent style={{alignItems: 'center'}}>
           <ButtonCus
             disabled={isDisabled}
             onPress={handleSubmit}
@@ -184,7 +186,7 @@ const SignUpScreen = ({navigation}: any) => {
         </SectionComponent>
 
         <LoginSocial />
-        <SectionComponent styles={{alignItems: 'center'}}>
+        <SectionComponent style={{alignItems: 'center'}}>
           <RowComponent justify="center">
             <TextCus text='Don"t have an account? ' />
             <ButtonCus

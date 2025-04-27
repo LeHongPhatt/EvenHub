@@ -2,43 +2,36 @@ import {View, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import MainNavigator from './MainNavigator';
 import AuthNavigator from './AuthNavigator';
-import {useAsyncStorage} from '@react-native-async-storage/async-storage';
+import AsyncStorage, {
+  useAsyncStorage,
+} from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {addAuth, authSelector} from '../redux/reducers/authReducer';
 import {SplashScreen} from '../screens';
+import DrawerNavigator from './DrawerNavigator';
+import TabNavigator from './TabNavigator';
 
-const AppRouter = () => {
-  const [isShowSplash, setShowSplash] = useState(true);
-  const {getItem} = useAsyncStorage('auth');
+const AppRouter = ({navigation}:any) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasSeenIntro, setHasSeenIntro] = useState(false);
   const auth = useSelector(authSelector);
 
-  const dispatch = useDispatch();
-  console.log('====accesstoken=', auth);
   useEffect(() => {
-    checkLogin();
-    const timeOut = setTimeout(() => {
-      setShowSplash(false);
-    }, 1500);
-    return () => clearTimeout(timeOut);
+    const init = async () => {
+      const seen = await AsyncStorage.getItem('hasSeenIntro');
+      setHasSeenIntro(!!seen);
+      setIsLoading(false);
+    };
+    init();
   }, []);
+  if (isLoading) return <SplashScreen />;
 
-  const checkLogin = async () => {
-    const res = await getItem();
+  if (auth?.accesstoken) {
+    // Nếu đã đăng nhập, điều hướng đến DrawerNavigator
+    return <TabNavigator />;
+  }
 
-    res && dispatch(addAuth(JSON.parse(res)));
-  };
-
-  return (
-    <>
-      {isShowSplash ? (
-        <SplashScreen />
-      ) : auth?.accesstoken ? (
-        <MainNavigator />
-      ) : (
-        <AuthNavigator />
-      )}
-    </>
-  );
+  return <AuthNavigator hasSeenIntro={hasSeenIntro} />;
 };
 
 export default AppRouter;
